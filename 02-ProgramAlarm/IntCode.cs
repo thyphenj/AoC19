@@ -12,32 +12,34 @@ namespace _02_ProgramAlarm
 
         public void Run()
         {
-            int sp = 0;
-            while (Memory[sp] != 99)
+            int pointer = 0;
+            int instruction = (int)Memory[pointer];
+            while (instruction != 99)
             {
-                int oper1, oper2, oper3;
-                switch (Memory[sp])
+                int address1, address2, address3;
+                switch (instruction)
                 {
                     case 1: // -- Add
-                        oper1 = (int)Memory[sp + 1];
-                        oper2 = (int)Memory[sp + 2];
-                        oper3 = (int)Memory[sp + 3];
-                        Memory[oper3] = Memory[oper1] + Memory[oper2];
-                        sp += 4;
+                        address1 = (int)Memory[pointer + 1];
+                        address2 = (int)Memory[pointer + 2];
+                        address3 = (int)Memory[pointer + 3];
+                        Memory[address3] = Memory[address1] + Memory[address2];
+                        pointer += 4;
                         break;
 
                     case 2: // -- Mult
-                        oper1 = (int)Memory[sp + 1];
-                        oper2 = (int)Memory[sp + 2];
-                        oper3 = (int)Memory[sp + 3];
-                        Memory[oper3] = Memory[oper1] * Memory[oper2];
-                        sp += 4;
+                        address1 = (int)Memory[pointer + 1];
+                        address2 = (int)Memory[pointer + 2];
+                        address3 = (int)Memory[pointer + 3];
+                        Memory[address3] = Memory[address1] * Memory[address2];
+                        pointer += 4;
                         break;
 
                     default:
                         System.Console.WriteLine("*************BUGGER!!");
-                        break;
+                        return;
                 }
+                instruction = (int)Memory[pointer];
             }
 
         }
