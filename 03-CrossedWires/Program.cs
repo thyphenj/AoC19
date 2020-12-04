@@ -1,6 +1,5 @@
-﻿using System.IO;
-using System.Collections.Generic;
-using System;
+﻿using System;
+using System.IO;
 
 namespace _03_CrossedWires
 {
@@ -9,45 +8,42 @@ namespace _03_CrossedWires
         static void Main(string[] args)
         {
             //------------------------------ Acquire input ------------------------------------
-            List<Wire> wires = new List<Wire>();
             string[] input = File.ReadAllLines(@"Resources/input.txt");
 
-            foreach (string str in input)
+            var wire1 = new Wire(input[0]);
+            var wire2 = new Wire(input[1]);
+
+            bool isManhattanSeeded = false;
+            bool isStepsSeeded = false;
+            int minManhattan = 0;
+            long minSteps = 0;
+
+            foreach (var strait1 in wire1.Straits)
             {
-                wires.Add(new Wire(str));
-            }
-
-            //------------------------------ Part 1 ------------------------------------
-            System.Console.WriteLine("--------------------- Part 1 ---------------------------");
-            {
-                int i = 0;
-
-                int? minDistance = null;
-
-                foreach (var pos in wires[0].Positions)
+                foreach (var strait2 in wire2.Straits)
                 {
-                    Console.Write($"{++i,6} {DateTime.Now}\r");
-                    if (i % 1000 == 0)
-                        Console.WriteLine();
-                    if (wires[1].Positions.Contains(pos))
+                    if (strait1.Crosses(strait2, out int manhattan, out long steps))
                     {
-                        int distance = Math.Abs(pos.X) + Math.Abs(pos.Y);
-
-                        if (!minDistance.HasValue)
-                            minDistance = distance;
-                        else if (minDistance > distance)
-                            minDistance = distance;
+                        if (!isManhattanSeeded || minManhattan > manhattan)
+                        {
+                            isManhattanSeeded = true;
+                            minManhattan = manhattan;
+                        }
+                        if (!isStepsSeeded || minSteps > steps)
+                        {
+                            isStepsSeeded = true;
+                            minSteps = steps;
+                        }
                     }
                 }
-                System.Console.WriteLine(minDistance);
             }
+            System.Console.WriteLine("--------------------- Part 1 ---------------------------");
+            Console.WriteLine(minManhattan);
 
-            //------------------------------ Part 2 ------------------------------------
             System.Console.WriteLine("--------------------- Part 2 ---------------------------");
-            {
-            }
-            System.Console.WriteLine("\n--------------------- END ---------------------------");
+            Console.WriteLine(minSteps);
 
+            System.Console.WriteLine("\n--------------------- END ---------------------------");
         }
     }
 }
