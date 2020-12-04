@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace _05_SunnyWithAChanceOfAsteroids
@@ -11,33 +12,38 @@ namespace _05_SunnyWithAChanceOfAsteroids
             //------------------------------ Acquire input ------------------------------------
             List<long> program = new List<long>();
             List<long> memory;
+            IntCode computer;
 
             string line = File.ReadAllText(@"Resources/input.txt");
+
             foreach (var str in line.Split(new char[] { ',' }))
             {
                 program.Add(long.Parse(str));
             }
 
             //------------------------------ Part 1 ------------------------------------
-            System.Console.WriteLine("--------------------- Part 1 ---------------------------");
-            {
-                memory = Reset(program);
+            Console.WriteLine("--------------------- Part 1 ---------------------------");
 
-                IntCode computer = new IntCode(memory, new Stream(), new Stream());
+            memory = LoadProgram(program);
 
-                computer.Run();
-            }
-            System.Console.WriteLine();
+            computer = new IntCode(memory, new Stream(), new Stream());
+            computer.Run();
+
+            Console.WriteLine();
 
             //------------------------------ Part 2 ------------------------------------
-            System.Console.WriteLine("--------------------- Part 2 ---------------------------");
+            Console.WriteLine("--------------------- Part 2 ---------------------------");
 
-            System.Console.WriteLine();
+            memory = LoadProgram(program);
+            computer = new IntCode(memory, new Stream(), new Stream());
+            computer.Run();
 
-            System.Console.WriteLine("--------------------- END ---------------------------");
+            Console.WriteLine();
+
+            Console.WriteLine("--------------------- END ---------------------------");
 
         }
-        private static List<long> Reset(List<long> from)
+        private static List<long> LoadProgram(List<long> from)
         {
             List<long> retval = new List<long>();
             foreach (var f in from)

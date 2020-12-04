@@ -14,21 +14,6 @@ namespace _05_SunnyWithAChanceOfAsteroids
             StreamIn = streamIn;
             StreamOut = streamOut;
         }
-        private long ValueAt(int mode, int location)
-        {
-            switch (mode)
-            {
-                case 0:
-                    return Memory[location];
-
-                case 1:
-                    return location;
-
-                default:
-                    return 99;
-
-            }
-        }
         public void Run()
         {
             int param1, param2, param3;
@@ -71,6 +56,45 @@ namespace _05_SunnyWithAChanceOfAsteroids
                         pointer += 2;
                         break;
 
+                    case 5:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        if (ValueAt(mode1, param1) != 0)
+                            pointer = (int)ValueAt(mode2, param2);
+                        else
+                            pointer += 3;
+                        break;
+
+                    case 6:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        if (ValueAt(mode1, param1) == 0)
+                            pointer = (int)ValueAt(mode2, param2);
+                        else
+                            pointer += 3;
+                        break;
+
+                    case 7:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        param3 = (int)Memory[pointer + 3];
+                        if (ValueAt(mode1, param1) < ValueAt(mode2, param2))
+                            Memory[param3] = 1;
+                        else
+                            Memory[param3] = 0;
+                        pointer += 4;
+                        break;
+
+                    case 8:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        param3 = (int)Memory[pointer + 3];
+                        if (ValueAt(mode1, param1) == ValueAt(mode2, param2))
+                            Memory[param3] = 1;
+                        else
+                            Memory[param3] = 0;
+                        pointer += 4;
+                        break;
 
                     default:
                         System.Console.WriteLine("*************BUGGER!!");
@@ -80,5 +104,22 @@ namespace _05_SunnyWithAChanceOfAsteroids
                 opcode = instruction % 100;
             }
         }
+
+        private long ValueAt(int mode, int location)
+        {
+            switch (mode)
+            {
+                case 0:
+                    return Memory[location];
+
+                case 1:
+                    return location;
+
+                default:
+                    return 99;
+
+            }
+        }
+
     }
 }
