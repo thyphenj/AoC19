@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using IntcodeComputer;
 
-namespace _05_SunnyWithAChanceOfAsteroids
+namespace IntcodeComputer
 {
     public class IntCode
     {
@@ -9,7 +8,7 @@ namespace _05_SunnyWithAChanceOfAsteroids
         IStream StreamIn;
         IStream StreamOut;
 
-        public IntCode(List<long> memory, IStream streamIn, IStream streamOut)
+        public IntCode(List<long> memory, IStream streamIn=null, IStream streamOut=null)
         {
             Memory = memory;
             StreamIn = streamIn;

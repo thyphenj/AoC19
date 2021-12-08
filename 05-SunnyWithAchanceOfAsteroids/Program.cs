@@ -5,7 +5,6 @@ using IntcodeComputer;
 
 namespace _05_SunnyWithAChanceOfAsteroids
 {
-
     class Program
     {
         static void Main(string[] args)
