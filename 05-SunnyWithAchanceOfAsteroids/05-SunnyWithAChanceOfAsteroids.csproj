@@ -20,6 +20,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\00-Template\IntcodeComputer.csproj" />
+    <ProjectReference Include="..\IntcodeComputer\IntcodeComputer.csproj" />
   </ItemGroup>
 </Project>

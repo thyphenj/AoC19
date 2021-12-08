@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+//using IntcodeComputer;
 
 namespace _07_AmplificationCircuit
 {
@@ -11,7 +12,7 @@ namespace _07_AmplificationCircuit
         {
             //------------------------------ Acquire input ------------------------------------
             List<long> program = new List<long>();
-            List<long> memory;
+            List<long> memoryA, memoryB, memoryC, memoryD, memoryE;
             IntCode ampA, ampB, ampC, ampD, ampE;
 
             string line = File.ReadAllText(@"Resources/input.txt");
@@ -25,12 +26,17 @@ namespace _07_AmplificationCircuit
 
             long max = 0;
 
-            memory = LoadProgram(program);
-            ampA = new IntCode(memory);
-            ampB = new IntCode(memory);
-            ampC = new IntCode(memory);
-            ampD = new IntCode(memory);
-            ampE = new IntCode(memory);
+            memoryA = LoadProgram(program);
+            memoryB = LoadProgram(program);
+            memoryC = LoadProgram(program);
+            memoryD = LoadProgram(program);
+            memoryE = LoadProgram(program);
+
+            ampA = new IntCode(memoryA);
+            ampB = new IntCode(memoryB);
+            ampC = new IntCode(memoryC);
+            ampD = new IntCode(memoryD);
+            ampE = new IntCode(memoryE);
 
             for (int a = 0; a < 5; a++)
                 for (int b = 0; b < 5; b++) if (b != a)
@@ -56,12 +62,17 @@ namespace _07_AmplificationCircuit
 
             max = 0;
 
-            memory = LoadProgram(program);
-            ampA = new IntCode(memory);
-            ampB = new IntCode(memory);
-            ampC = new IntCode(memory);
-            ampD = new IntCode(memory);
-            ampE = new IntCode(memory);
+            memoryA = LoadProgram(program);
+            memoryB = LoadProgram(program);
+            memoryC = LoadProgram(program);
+            memoryD = LoadProgram(program);
+            memoryE = LoadProgram(program);
+
+            ampA = new IntCode(memoryA);
+            ampB = new IntCode(memoryB);
+            ampC = new IntCode(memoryC);
+            ampD = new IntCode(memoryD);
+            ampE = new IntCode(memoryE);
 
             for (int a = 0; a < 5; a++)
                 for (int b = 0; b < 5; b++) if (b != a)
@@ -99,14 +110,14 @@ namespace _07_AmplificationCircuit
             }
             return (retval);
         }
-        public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k)
-        {
-            return k == 0 ? new[] { new T[0] } :
-              elements.SelectMany((e, i) => elements
-                    .Skip(i + 1)
-                    .Combinations(k - 1)
-                    .Select(c => (new[] { e })
-                    .Concat(c)));
-        }
+        //public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k)
+        //{
+        //    return k == 0 ? new[] { new T[0] } :
+        //      elements.SelectMany((e, i) => elements
+        //            .Skip(i + 1)
+        //            .Combinations(k - 1)
+        //            .Select(c => (new[] { e })
+        //            .Concat(c)));
+        //}
     }
 }

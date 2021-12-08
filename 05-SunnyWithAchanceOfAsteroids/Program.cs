@@ -7,35 +7,33 @@ namespace _05_SunnyWithAChanceOfAsteroids
 {
     class Program
     {
-        static void Main(string[] args)
+        static List<long> ReadIntcodeFile (string filename)
         {
-            //------------------------------ Acquire input ------------------------------------
-            List<long> program = new List<long>();
-            List<long> memory;
-            IntCode computer;
+            List<long> retval = new List<long>();
 
-            string line = File.ReadAllText(@"Resources/input.txt");
+            string line = File.ReadAllText(filename);
 
             foreach (var str in line.Split(new char[] { ',' }))
             {
-                program.Add(long.Parse(str));
+                retval.Add(long.Parse(str));
             }
+            return retval;
+        }
+        static void Main(string[] args)
+        {
+            IntCode computer;
+            List<long> program = ReadIntcodeFile (@"Resources/input.txt");
 
-            //------------------------------ Part 1 ------------------------------------
             Console.WriteLine("--------------------- Part 1 ---------------------------");
 
-            memory = LoadProgram(program);
-
-            computer = new IntCode(memory, new Stream(), new Stream());
+            computer = new IntCode(program, new Stream(), new Stream());
             computer.Run();
 
             Console.WriteLine();
 
-            //------------------------------ Part 2 ------------------------------------
             Console.WriteLine("--------------------- Part 2 ---------------------------");
 
-            memory = LoadProgram(program);
-            computer = new IntCode(memory, new Stream(), new Stream());
+            computer = new IntCode(program, new Stream(), new Stream());
             computer.Run();
 
             Console.WriteLine();
@@ -45,11 +43,11 @@ namespace _05_SunnyWithAChanceOfAsteroids
         }
         private static List<long> LoadProgram(List<long> from)
         {
-            List<long> retval = new List<long>();
-            foreach (var f in from)
-            {
-                retval.Add(f);
-            }
+            List<long> retval = new List<long>(from);
+            //foreach (var f in from)
+            //{
+            //    retval.Add(f);
+            //}
             return (retval);
         }
     }

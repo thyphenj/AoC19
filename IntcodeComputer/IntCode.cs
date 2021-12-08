@@ -10,7 +10,8 @@ namespace IntcodeComputer
 
         public IntCode(List<long> memory, IStream streamIn=null, IStream streamOut=null)
         {
-            Memory = memory;
+            Memory = new List<long>(memory);
+
             StreamIn = streamIn;
             StreamOut = streamOut;
         }
@@ -121,5 +122,9 @@ namespace IntcodeComputer
             }
         }
 
+        public long ViewMemoryLocation ( int loc)
+        {
+            return Memory[loc];
+        }
     }
 }

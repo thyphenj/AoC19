@@ -29,7 +29,7 @@ namespace _02_ProgramAlarm
 
                 computer.Run();
 
-                System.Console.WriteLine(memory[0]);
+                System.Console.WriteLine(computer.ViewMemoryLocation(0));
             }
             System.Console.WriteLine();
 
@@ -49,8 +49,8 @@ namespace _02_ProgramAlarm
                         IntCode computer = new IntCode(memory);
 
                         computer.Run();
-                        if (memory[0] == target)
-                            System.Console.WriteLine($"{noun,2} {verb,2} {noun*100+verb,4}");
+                        if (computer.ViewMemoryLocation(0) == target)
+                            System.Console.WriteLine($"{noun*100+verb,4}");
                     }
                 }
             }
