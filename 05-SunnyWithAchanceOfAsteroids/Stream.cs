@@ -1,8 +1,9 @@
 ﻿using System;
+using IntcodeComputer;
 
 namespace _05_SunnyWithAChanceOfAsteroids
 {
-    public class Stream
+    public  class Stream : IStream
     {
         public Stream()
         {

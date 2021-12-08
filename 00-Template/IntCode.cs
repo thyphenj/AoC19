@@ -1,38 +1,99 @@
 ﻿using System.Collections.Generic;
+using IntcodeComputer;
 
-namespace IntcodeComputer
+namespace _05_SunnyWithAChanceOfAsteroids
 {
     public class IntCode
     {
         List<long> Memory;
+        IStream StreamIn;
+        IStream StreamOut;
 
-        public IntCode(List<long> memory)
+        public IntCode(List<long> memory, IStream streamIn, IStream streamOut)
         {
             Memory = memory;
+            StreamIn = streamIn;
+            StreamOut = streamOut;
         }
-
         public void Run()
         {
+            int param1, param2, param3;
+
             int pointer = 0;
             int instruction = (int)Memory[pointer];
-            while (instruction != 99)
+            int opcode = instruction % 100;
+            while (opcode != 99)
             {
-                int address1, address2, address3;
-                switch (instruction)
+                int mode1 = (instruction / 100) % 10;
+                int mode2 = (instruction / 1000) % 10;
+                int mode3 = (instruction / 10000) % 10;
+                switch (opcode)
                 {
                     case 1: // -- Add
-                        address1 = (int)Memory[pointer + 1];
-                        address2 = (int)Memory[pointer + 2];
-                        address3 = (int)Memory[pointer + 3];
-                        Memory[address3] = Memory[address1] + Memory[address2];
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        param3 = (int)Memory[pointer + 3];
+                        Memory[param3] = ValueAt(mode1, param1) + ValueAt(mode2, param2);
                         pointer += 4;
                         break;
 
                     case 2: // -- Mult
-                        address1 = (int)Memory[pointer + 1];
-                        address2 = (int)Memory[pointer + 2];
-                        address3 = (int)Memory[pointer + 3];
-                        Memory[address3] = Memory[address1] * Memory[address2];
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        param3 = (int)Memory[pointer + 3];
+                        Memory[param3] = ValueAt(mode1, param1) * ValueAt(mode2, param2);
+                        pointer += 4;
+                        break;
+
+                    case 3:
+                        param1 = (int)Memory[pointer + 1];
+                        Memory[param1] = StreamIn.Read();
+                        pointer += 2;
+                        break;
+
+                    case 4:
+                        param1 = (int)Memory[pointer + 1];
+                        StreamOut.Write(ValueAt(mode1, param1));
+                        pointer += 2;
+                        break;
+
+                    case 5:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        if (ValueAt(mode1, param1) != 0)
+                            pointer = (int)ValueAt(mode2, param2);
+                        else
+                            pointer += 3;
+                        break;
+
+                    case 6:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        if (ValueAt(mode1, param1) == 0)
+                            pointer = (int)ValueAt(mode2, param2);
+                        else
+                            pointer += 3;
+                        break;
+
+                    case 7:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        param3 = (int)Memory[pointer + 3];
+                        if (ValueAt(mode1, param1) < ValueAt(mode2, param2))
+                            Memory[param3] = 1;
+                        else
+                            Memory[param3] = 0;
+                        pointer += 4;
+                        break;
+
+                    case 8:
+                        param1 = (int)Memory[pointer + 1];
+                        param2 = (int)Memory[pointer + 2];
+                        param3 = (int)Memory[pointer + 3];
+                        if (ValueAt(mode1, param1) == ValueAt(mode2, param2))
+                            Memory[param3] = 1;
+                        else
+                            Memory[param3] = 0;
                         pointer += 4;
                         break;
 
@@ -41,8 +102,25 @@ namespace IntcodeComputer
                         return;
                 }
                 instruction = (int)Memory[pointer];
+                opcode = instruction % 100;
             }
-
         }
+
+        private long ValueAt(int mode, int location)
+        {
+            switch (mode)
+            {
+                case 0:
+                    return Memory[location];
+
+                case 1:
+                    return location;
+
+                default:
+                    return 99;
+
+            }
+        }
+
     }
 }
