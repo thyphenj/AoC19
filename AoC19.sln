@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.808.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05-SunnyWithAchanceOfAsteroids", "05-SunnyWithAchanceOfAsteroids\05-SunnyWithAchanceOfAsteroids.csproj", "{2FFCF670-4680-4B6E-A5A5-2F2FE45804C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "00-Template", "00-Template\00-Template.csproj", "{4774568A-8ABC-4618-8C9B-9B297EC3D6DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntcodeComputer", "00-Template\IntcodeComputer.csproj", "{4774568A-8ABC-4618-8C9B-9B297EC3D6DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01-TheTyrranyOfTheRocketEquation", "01-TheTyrranyOfTheRockeEquation\01-TheTyrranyOfTheRocketEquation.csproj", "{50088603-8A93-45E5-A909-B85DCA141983}"
 EndProject

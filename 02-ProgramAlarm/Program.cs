@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using IntcodeComputer;
 
 namespace _02_ProgramAlarm
 {
@@ -49,7 +50,7 @@ namespace _02_ProgramAlarm
 
                         computer.Run();
                         if (memory[0] == target)
-                            System.Console.WriteLine($"{noun,2} {verb,2}");
+                            System.Console.WriteLine($"{noun,2} {verb,2} {noun*100+verb,4}");
                     }
                 }
             }

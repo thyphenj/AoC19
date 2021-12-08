@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-namespace _02_ProgramAlarm
+
+namespace IntcodeComputer
 {
     public class IntCode
     {
