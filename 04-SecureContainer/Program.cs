@@ -15,12 +15,11 @@ namespace _04_SecureContainer
 
             for (int pw = lo; pw <= hi; pw++)
             {
-                string num = pw.ToString();
                 bool isAscending = true;
                 bool hasAdjacent = false;
                 bool foundPair = false;
 
-                num = '_' + num + "_";
+                string num = $"_{pw}_";
 
                 for (int i = 0; i < 5; i++)
                 {

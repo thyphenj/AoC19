@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IntcodeComputer
 {
@@ -24,9 +25,9 @@ namespace IntcodeComputer
             int opcode = instruction % 100;
             while (opcode != 99)
             {
-                int mode1 = (instruction / 100) % 10;
-                int mode2 = (instruction / 1000) % 10;
-                int mode3 = (instruction / 10000) % 10;
+                Mode mode1 = (Mode)((instruction / 100) % 10);
+                Mode mode2 = (Mode)((instruction / 1000) % 10);
+                Mode mode3 = (Mode)((instruction / 10000) % 10);
                 switch (opcode)
                 {
                     case 1: // -- Add
@@ -45,19 +46,19 @@ namespace IntcodeComputer
                         pointer += 4;
                         break;
 
-                    case 3:
+                    case 3: // -- Read
                         param1 = (int)Memory[pointer + 1];
                         Memory[param1] = StreamIn.Read();
                         pointer += 2;
                         break;
 
-                    case 4:
+                    case 4: // -- Write
                         param1 = (int)Memory[pointer + 1];
                         StreamOut.Write(ValueAt(mode1, param1));
                         pointer += 2;
                         break;
 
-                    case 5:
+                    case 5: // -- jump-if-true
                         param1 = (int)Memory[pointer + 1];
                         param2 = (int)Memory[pointer + 2];
                         if (ValueAt(mode1, param1) != 0)
@@ -66,7 +67,7 @@ namespace IntcodeComputer
                             pointer += 3;
                         break;
 
-                    case 6:
+                    case 6: // -- jump-if-false
                         param1 = (int)Memory[pointer + 1];
                         param2 = (int)Memory[pointer + 2];
                         if (ValueAt(mode1, param1) == 0)
@@ -75,7 +76,7 @@ namespace IntcodeComputer
                             pointer += 3;
                         break;
 
-                    case 7:
+                    case 7: // -- LT
                         param1 = (int)Memory[pointer + 1];
                         param2 = (int)Memory[pointer + 2];
                         param3 = (int)Memory[pointer + 3];
@@ -86,7 +87,7 @@ namespace IntcodeComputer
                         pointer += 4;
                         break;
 
-                    case 8:
+                    case 8: // -- EQ
                         param1 = (int)Memory[pointer + 1];
                         param2 = (int)Memory[pointer + 2];
                         param3 = (int)Memory[pointer + 3];
@@ -98,22 +99,21 @@ namespace IntcodeComputer
                         break;
 
                     default:
-                        System.Console.WriteLine("*************BUGGER!!");
-                        return;
+                        throw new Exception("*************BUGGER!!");
                 }
                 instruction = (int)Memory[pointer];
                 opcode = instruction % 100;
             }
         }
 
-        private long ValueAt(int mode, int location)
+        private long ValueAt(Mode mode, int location)
         {
             switch (mode)
             {
-                case 0:
+                case Mode.POSITION:
                     return Memory[location];
 
-                case 1:
+                case Mode.IMMEDIATE:
                     return location;
 
                 default:
