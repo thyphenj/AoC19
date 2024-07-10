@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-//using IntcodeComputer;
+using IntcodeComputer;
 
 namespace _07_AmplificationCircuit
 {
@@ -13,11 +12,10 @@ namespace _07_AmplificationCircuit
             //------------------------------ Acquire input ------------------------------------
             List<long> program = new List<long>();
             List<long> memoryA, memoryB, memoryC, memoryD, memoryE;
-            IntCode ampA, ampB, ampC, ampD, ampE;
 
             string line = File.ReadAllText(@"Resources/input.txt");
 
-            foreach (var str in line.Split(new char[] { ',' }))
+            foreach (var str in line.Split(','))
             {
                 program.Add(long.Parse(str));
             }
@@ -31,29 +29,23 @@ namespace _07_AmplificationCircuit
             memoryC = LoadProgram(program);
             memoryD = LoadProgram(program);
             memoryE = LoadProgram(program);
-
-            ampA = new IntCode(memoryA);
-            ampB = new IntCode(memoryB);
-            ampC = new IntCode(memoryC);
-            ampD = new IntCode(memoryD);
-            ampE = new IntCode(memoryE);
-
+            Stream stream;
             for (int a = 0; a < 5; a++)
                 for (int b = 0; b < 5; b++) if (b != a)
                         for (int c = 0; c < 5; c++) if (c != a && c != b)
                                 for (int d = 0; d < 5; d++) if (d != a && d != b && d != c)
                                         for (int e = 0; e < 5; e++) if (e != a && e != b && e != c && e != d)
                                             {
-                                                Streams streams = new Streams();
+                                                stream = new Stream();
 
-                                                streams.Queue.Insert(0, a); ampA.Run(streams); //Console.WriteLine(ampA.Stopped);
-                                                streams.Queue.Insert(0, b); ampB.Run(streams);
-                                                streams.Queue.Insert(0, c); ampC.Run(streams);
-                                                streams.Queue.Insert(0, d); ampD.Run(streams);
-                                                streams.Queue.Insert(0, e); ampE.Run(streams);
+                                                stream.Seed(a); var ampA = new IntCode(memoryA, stream, stream); ampA.Run();
+                                                stream.Seed(b); var ampB = new IntCode(memoryB, stream, stream); ampB.Run();
+                                                stream.Seed(c); var ampC = new IntCode(memoryC, stream, stream); ampC.Run();
+                                                stream.Seed(d); var ampD = new IntCode(memoryD, stream, stream); ampD.Run();
+                                                stream.Seed(e); var ampE = new IntCode(memoryE, stream, stream); ampE.Run();
 
-                                                if (streams.Queue[0] > max)
-                                                    max = streams.Queue[0];
+                                                max = Math.Max(max, stream.Cueue[0]);
+                                                // Console.WriteLine($"{a}{b}{c}{d}{e}  ->  {stream.Cueue[0]}");
                                             }
             Console.WriteLine(max);
             Console.WriteLine();
@@ -68,56 +60,45 @@ namespace _07_AmplificationCircuit
             memoryD = LoadProgram(program);
             memoryE = LoadProgram(program);
 
-            ampA = new IntCode(memoryA);
-            ampB = new IntCode(memoryB);
-            ampC = new IntCode(memoryC);
-            ampD = new IntCode(memoryD);
-            ampE = new IntCode(memoryE);
-
-            for (int a = 0; a < 5; a++)
-                for (int b = 0; b < 5; b++) if (b != a)
-                        for (int c = 0; c < 5; c++) if (c != a && c != b)
-                                for (int d = 0; d < 5; d++) if (d != a && d != b && d != c)
-                                        for (int e = 0; e < 5; e++) if (e != a && e != b && e != c && e != d)
+            for (int a = 5; a < 10; a++)
+                for (int b = 5; b < 10; b++) if (b != a)
+                        for (int c = 5; c < 10; c++) if (c != a && c != b)
+                                for (int d = 5; d < 10; d++) if (d != a && d != b && d != c)
+                                        for (int e = 5; e < 10; e++) if (e != a && e != b && e != c && e != d)
                                             {
+                                                stream = new Stream();
+
+                                                stream.Seed(a); var ampA = new IntCode(memoryA, stream, stream, true); ampA.Run();
+                                                stream.Seed(b); var ampB = new IntCode(memoryB, stream, stream, true); ampB.Run();
+                                                stream.Seed(c); var ampC = new IntCode(memoryC, stream, stream, true); ampC.Run();
+                                                stream.Seed(d); var ampD = new IntCode(memoryD, stream, stream, true); ampD.Run();
+                                                stream.Seed(e); var ampE = new IntCode(memoryE, stream, stream, true); ampE.Run();
+
+                                                max = Math.Max(max, stream.Cueue[0]);
                                                 do
                                                 {
-                                                    Streams streams = new Streams();
+                                                    ampA.Run();
+                                                    ampB.Run();
+                                                    ampC.Run();
+                                                    ampD.Run();
+                                                    ampE.Run();
 
-                                                    streams.Queue.Insert(0, a + 5); ampA.Run(streams);
-                                                    streams.Queue.Insert(0, b + 5); ampB.Run(streams);
-                                                    streams.Queue.Insert(0, c + 5); ampC.Run(streams);
-                                                    streams.Queue.Insert(0, d + 5); ampD.Run(streams);
-                                                    streams.Queue.Insert(0, e + 5); ampE.Run(streams);
+                                                    max = Math.Max(max, stream.Cueue[0]);
 
-                                                    if (streams.Queue[0] > max)
-                                                        max = streams.Queue[0];
-                                                } while (!ampE.Stopped);
-                                                Console.WriteLine("-- next--");
+                                                } while (!ampE.Halted);
                                             }
             Console.WriteLine(max);
             Console.WriteLine();
 
             Console.WriteLine("--------------------- END ---------------------------");
-
         }
         private static List<long> LoadProgram(List<long> from)
         {
             List<long> retval = new List<long>();
             foreach (var f in from)
-            {
                 retval.Add(f);
-            }
+
             return (retval);
         }
-        //public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> elements, int k)
-        //{
-        //    return k == 0 ? new[] { new T[0] } :
-        //      elements.SelectMany((e, i) => elements
-        //            .Skip(i + 1)
-        //            .Combinations(k - 1)
-        //            .Select(c => (new[] { e })
-        //            .Concat(c)));
-        //}
     }
 }

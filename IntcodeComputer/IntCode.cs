@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace IntcodeComputer
 {
@@ -8,121 +9,151 @@ namespace IntcodeComputer
         List<long> Memory;
         IStream StreamIn;
         IStream StreamOut;
+        public bool Halted = false;
+        public bool Pausable = false;
+        public bool Paused = false;
+        public int RestartPointer;
+        public record Param(Mode mode, int location);
 
-        public IntCode(List<long> memory, IStream streamIn=null, IStream streamOut=null)
+        public IntCode(List<long> memory, IStream streamIn = null, IStream streamOut = null, bool pausable = false)
         {
             Memory = new List<long>(memory);
 
             StreamIn = streamIn;
             StreamOut = streamOut;
+
+            Pausable = pausable;
         }
         public void Run()
         {
-            int param1, param2, param3;
+            int pointer;
+            
 
-            int pointer = 0;
-            int instruction = (int)Memory[pointer];
+            if (Paused)
+            { 
+                pointer = RestartPointer;
+                Paused = false;
+            }
+            else
+                pointer = 0;
+
+            int instruction = (int)Memory[pointer++];
             int opcode = instruction % 100;
-            while (opcode != 99)
+            while (!Halted && !Paused)
             {
+                Param param1, param2, param3;
+
                 Mode mode1 = (Mode)((instruction / 100) % 10);
                 Mode mode2 = (Mode)((instruction / 1000) % 10);
                 Mode mode3 = (Mode)((instruction / 10000) % 10);
                 switch (opcode)
                 {
                     case 1: // -- Add
-                        param1 = (int)Memory[pointer + 1];
-                        param2 = (int)Memory[pointer + 2];
-                        param3 = (int)Memory[pointer + 3];
-                        Memory[param3] = ValueAt(mode1, param1) + ValueAt(mode2, param2);
-                        pointer += 4;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param2 = new Param(mode2, (int)Memory[pointer++]);
+                        param3 = new Param(mode3, (int)Memory[pointer++]);
+
+                        Memory[param3.location] = ValueAt(param1) + ValueAt(param2);
+
                         break;
 
                     case 2: // -- Mult
-                        param1 = (int)Memory[pointer + 1];
-                        param2 = (int)Memory[pointer + 2];
-                        param3 = (int)Memory[pointer + 3];
-                        Memory[param3] = ValueAt(mode1, param1) * ValueAt(mode2, param2);
-                        pointer += 4;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param2 = new Param(mode2, (int)Memory[pointer++]);
+                        param3 = new Param(mode3, (int)Memory[pointer++]);
+
+                        Memory[param3.location] = ValueAt(param1) * ValueAt(param2);
+
                         break;
 
                     case 3: // -- Read
-                        param1 = (int)Memory[pointer + 1];
-                        Memory[param1] = StreamIn.Read();
-                        pointer += 2;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+
+                        Memory[param1.location] = StreamIn.Read();
+
                         break;
 
                     case 4: // -- Write
-                        param1 = (int)Memory[pointer + 1];
-                        StreamOut.Write(ValueAt(mode1, param1));
-                        pointer += 2;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+
+                        StreamOut.Write(ValueAt(param1));
+
+                        Paused = Pausable;
+
                         break;
 
                     case 5: // -- jump-if-true
-                        param1 = (int)Memory[pointer + 1];
-                        param2 = (int)Memory[pointer + 2];
-                        if (ValueAt(mode1, param1) != 0)
-                            pointer = (int)ValueAt(mode2, param2);
-                        else
-                            pointer += 3;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param2 = new Param(mode2, (int)Memory[pointer++]);
+
+                        if (ValueAt(param1) != 0)
+                            pointer = (int)ValueAt(param2);
+
                         break;
 
                     case 6: // -- jump-if-false
-                        param1 = (int)Memory[pointer + 1];
-                        param2 = (int)Memory[pointer + 2];
-                        if (ValueAt(mode1, param1) == 0)
-                            pointer = (int)ValueAt(mode2, param2);
-                        else
-                            pointer += 3;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param2 = new Param(mode2, (int)Memory[pointer++]);
+
+                        if (ValueAt(param1) == 0)
+                            pointer = (int)ValueAt(param2);
+
                         break;
 
                     case 7: // -- LT
-                        param1 = (int)Memory[pointer + 1];
-                        param2 = (int)Memory[pointer + 2];
-                        param3 = (int)Memory[pointer + 3];
-                        if (ValueAt(mode1, param1) < ValueAt(mode2, param2))
-                            Memory[param3] = 1;
-                        else
-                            Memory[param3] = 0;
-                        pointer += 4;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param2 = new Param(mode2, (int)Memory[pointer++]);
+                        param3 = new Param(mode3, (int)Memory[pointer++]);
+
+                        Memory[param3.location] = (ValueAt(param1) < ValueAt(param2)) ? 1 : 0;
+
                         break;
 
                     case 8: // -- EQ
-                        param1 = (int)Memory[pointer + 1];
-                        param2 = (int)Memory[pointer + 2];
-                        param3 = (int)Memory[pointer + 3];
-                        if (ValueAt(mode1, param1) == ValueAt(mode2, param2))
-                            Memory[param3] = 1;
-                        else
-                            Memory[param3] = 0;
-                        pointer += 4;
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param2 = new Param(mode2, (int)Memory[pointer++]);
+                        param3 = new Param(mode3, (int)Memory[pointer++]);
+
+                        Memory[param3.location] = (ValueAt(param1) == ValueAt(param2)) ? 1 : 0;
+
+                        break;
+
+                    case 99 : // -- HALT
+                        Halted = true;
                         break;
 
                     default:
                         throw new Exception("*************BUGGER!!");
                 }
-                instruction = (int)Memory[pointer];
-                opcode = instruction % 100;
+                if (Paused)
+                {
+                    RestartPointer = pointer;
+                }
+                else if ( !Halted)
+                {
+                    instruction = (int)Memory[pointer++];
+                    opcode = instruction % 100;
+                }
             }
         }
 
-        private long ValueAt(Mode mode, int location)
+        private long ValueAt(Param param)
         {
-            switch (mode)
+            switch (param.mode)
             {
                 case Mode.POSITION:
-                    return Memory[location];
+                    return Memory[param.location];
 
                 case Mode.IMMEDIATE:
-                    return location;
+                    return param.location;
 
                 default:
-                    return 99;
+                    throw new Exception($"Mode [{param.mode}] is invalid");
 
             }
         }
 
-        public long ViewMemoryLocation ( int loc)
+        public long ViewMemoryLocation(int loc)
         {
             return Memory[loc];
         }
