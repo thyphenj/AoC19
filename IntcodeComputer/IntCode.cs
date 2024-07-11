@@ -1,23 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace IntcodeComputer
 {
     public class IntCode
     {
+        public bool Halted = false;
+
         List<long> Memory;
         IStream StreamIn;
         IStream StreamOut;
-        public bool Halted = false;
-        public bool Pausable = false;
-        public bool Paused = false;
-        public int RestartPointer;
-        public record Param(Mode mode, int location);
+        int RelativeBase = 0;
+        record Param(Mode mode, int location);
+        bool Pausable = false;
+        bool Paused = false;
+        int RestartPointer;
 
         public IntCode(List<long> memory, IStream streamIn = null, IStream streamOut = null, bool pausable = false)
         {
             Memory = new List<long>(memory);
+
+            StreamIn = streamIn;
+            StreamOut = streamOut;
+        }
+        public IntCode(string filename, IStream streamIn = null, IStream streamOut = null, bool pausable = false)
+        {
+            Memory = new List<long>();
+
+            foreach (var n in File.ReadAllText(filename).Split(','))
+                Memory.Add(long.Parse(n));
 
             StreamIn = streamIn;
             StreamOut = streamOut;
@@ -27,10 +40,9 @@ namespace IntcodeComputer
         public void Run()
         {
             int pointer;
-            
 
             if (Paused)
-            { 
+            {
                 pointer = RestartPointer;
                 Paused = false;
             }
@@ -53,7 +65,7 @@ namespace IntcodeComputer
                         param2 = new Param(mode2, (int)Memory[pointer++]);
                         param3 = new Param(mode3, (int)Memory[pointer++]);
 
-                        Memory[param3.location] = ValueAt(param1) + ValueAt(param2);
+                        AssignAt(param3, ValueAt(param1) + ValueAt(param2));
 
                         break;
 
@@ -62,14 +74,14 @@ namespace IntcodeComputer
                         param2 = new Param(mode2, (int)Memory[pointer++]);
                         param3 = new Param(mode3, (int)Memory[pointer++]);
 
-                        Memory[param3.location] = ValueAt(param1) * ValueAt(param2);
+                        AssignAt(param3, ValueAt(param1) * ValueAt(param2));
 
                         break;
 
                     case 3: // -- Read
                         param1 = new Param(mode1, (int)Memory[pointer++]);
 
-                        Memory[param1.location] = StreamIn.Read();
+                        AssignAt(param1, StreamIn.Read());
 
                         break;
 
@@ -105,7 +117,7 @@ namespace IntcodeComputer
                         param2 = new Param(mode2, (int)Memory[pointer++]);
                         param3 = new Param(mode3, (int)Memory[pointer++]);
 
-                        Memory[param3.location] = (ValueAt(param1) < ValueAt(param2)) ? 1 : 0;
+                        AssignAt(param3, (ValueAt(param1) < ValueAt(param2)) ? 1 : 0);
 
                         break;
 
@@ -114,11 +126,18 @@ namespace IntcodeComputer
                         param2 = new Param(mode2, (int)Memory[pointer++]);
                         param3 = new Param(mode3, (int)Memory[pointer++]);
 
-                        Memory[param3.location] = (ValueAt(param1) == ValueAt(param2)) ? 1 : 0;
+                        AssignAt(param3, (ValueAt(param1) == ValueAt(param2)) ? 1 : 0);
 
                         break;
 
-                    case 99 : // -- HALT
+                    case 9: // -- RelBase
+                        param1 = new Param(mode1, (int)Memory[pointer++]);
+
+                        RelativeBase += (int)ValueAt(param1);;
+
+                        break;
+
+                    case 99: // -- HALT
                         Halted = true;
                         break;
 
@@ -129,7 +148,7 @@ namespace IntcodeComputer
                 {
                     RestartPointer = pointer;
                 }
-                else if ( !Halted)
+                else if (!Halted)
                 {
                     instruction = (int)Memory[pointer++];
                     opcode = instruction % 100;
@@ -142,17 +161,46 @@ namespace IntcodeComputer
             switch (param.mode)
             {
                 case Mode.POSITION:
+                    while (Memory.Count < param.location + 1)
+                        Memory.Add(0);
                     return Memory[param.location];
 
                 case Mode.IMMEDIATE:
                     return param.location;
 
-                default:
-                    throw new Exception($"Mode [{param.mode}] is invalid");
+                case Mode.RELATIVE:
+                    while (Memory.Count < param.location + RelativeBase)
+                        Memory.Add(0);
+                    return Memory[param.location + RelativeBase];
 
+                default:
+                    throw new Exception($"Mode [{param.mode}] is ValueAt");
             }
         }
 
+        private void AssignAt(Param param, long value)
+        {
+            switch (param.mode)
+            {
+                case Mode.POSITION:
+                    while (Memory.Count < param.location + 1)
+                        Memory.Add(0);
+                    Memory[param.location] = value;
+                    break;
+
+                case Mode.IMMEDIATE:
+                    throw new Exception("Can't Assign in immediate mode");
+
+                case Mode.RELATIVE:
+                    while (Memory.Count < param.location + RelativeBase+1)
+                        Memory.Add(0);
+                    Memory[param.location + RelativeBase] = value;
+                    break;
+
+                default:
+                    throw new Exception($"Mode [{param.mode}] is invalid on AssignAt");
+            }
+        }
         public long ViewMemoryLocation(int loc)
         {
             return Memory[loc];

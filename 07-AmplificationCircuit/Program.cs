@@ -24,11 +24,6 @@ namespace _07_AmplificationCircuit
 
             long max = 0;
 
-            memoryA = LoadProgram(program);
-            memoryB = LoadProgram(program);
-            memoryC = LoadProgram(program);
-            memoryD = LoadProgram(program);
-            memoryE = LoadProgram(program);
             Stream stream;
             for (int a = 0; a < 5; a++)
                 for (int b = 0; b < 5; b++) if (b != a)
@@ -38,11 +33,11 @@ namespace _07_AmplificationCircuit
                                             {
                                                 stream = new Stream();
 
-                                                stream.Seed(a); var ampA = new IntCode(memoryA, stream, stream); ampA.Run();
-                                                stream.Seed(b); var ampB = new IntCode(memoryB, stream, stream); ampB.Run();
-                                                stream.Seed(c); var ampC = new IntCode(memoryC, stream, stream); ampC.Run();
-                                                stream.Seed(d); var ampD = new IntCode(memoryD, stream, stream); ampD.Run();
-                                                stream.Seed(e); var ampE = new IntCode(memoryE, stream, stream); ampE.Run();
+                                                stream.Seed(a); var ampA = new IntCode(@"Resources/input.txt", stream, stream); ampA.Run();
+                                                stream.Seed(b); var ampB = new IntCode(@"Resources/input.txt", stream, stream); ampB.Run();
+                                                stream.Seed(c); var ampC = new IntCode(@"Resources/input.txt", stream, stream); ampC.Run();
+                                                stream.Seed(d); var ampD = new IntCode(@"Resources/input.txt", stream, stream); ampD.Run();
+                                                stream.Seed(e); var ampE = new IntCode(@"Resources/input.txt", stream, stream); ampE.Run();
 
                                                 max = Math.Max(max, stream.Cueue[0]);
                                                 // Console.WriteLine($"{a}{b}{c}{d}{e}  ->  {stream.Cueue[0]}");

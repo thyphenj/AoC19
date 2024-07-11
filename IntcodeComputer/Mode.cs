@@ -3,6 +3,7 @@
     public enum Mode
     {
         POSITION = 0,
-        IMMEDIATE
+        IMMEDIATE,
+        RELATIVE
     }
 }
