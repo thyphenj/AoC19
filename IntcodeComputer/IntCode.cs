@@ -161,16 +161,14 @@ namespace IntcodeComputer
             switch (param.mode)
             {
                 case Mode.POSITION:
-                    while (Memory.Count < param.location + 1)
-                        Memory.Add(0);
+                    EnsureMemoryExists(param.location);
                     return Memory[param.location];
 
                 case Mode.IMMEDIATE:
                     return param.location;
 
                 case Mode.RELATIVE:
-                    while (Memory.Count < param.location + RelativeBase)
-                        Memory.Add(0);
+                    EnsureMemoryExists(param.location + RelativeBase);
                     return Memory[param.location + RelativeBase];
 
                 default:
@@ -183,8 +181,7 @@ namespace IntcodeComputer
             switch (param.mode)
             {
                 case Mode.POSITION:
-                    while (Memory.Count < param.location + 1)
-                        Memory.Add(0);
+                    EnsureMemoryExists(param.location);
                     Memory[param.location] = value;
                     break;
 
@@ -192,14 +189,19 @@ namespace IntcodeComputer
                     throw new Exception("Can't Assign in immediate mode");
 
                 case Mode.RELATIVE:
-                    while (Memory.Count < param.location + RelativeBase+1)
-                        Memory.Add(0);
+                    EnsureMemoryExists(param.location + RelativeBase);
                     Memory[param.location + RelativeBase] = value;
                     break;
 
                 default:
                     throw new Exception($"Mode [{param.mode}] is invalid on AssignAt");
             }
+        }
+
+        private void EnsureMemoryExists( int loc )
+        {
+            while (Memory.Count < loc+1)
+                Memory.Add(0);
         }
         public long ViewMemoryLocation(int loc)
         {

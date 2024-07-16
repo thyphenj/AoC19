@@ -7,6 +7,7 @@
         }
         public long Read()
         {
+            Console.Write("> ");
             string retval = Console.ReadLine()??"";
             return long.Parse(retval);
         }

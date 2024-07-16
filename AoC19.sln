@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "08-SpaceImageFormat", "08-S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "09-SensorBoost", "09-SensorBoost\09-SensorBoost.csproj", "{1F458D5D-158B-4AD3-94B8-5B45C366D052}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "10-MonitoringStation", "10-MonitoringStation\10-MonitoringStation.csproj", "{49A72E94-787E-43DF-9373-7A8E4085E4B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{1F458D5D-158B-4AD3-94B8-5B45C366D052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F458D5D-158B-4AD3-94B8-5B45C366D052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F458D5D-158B-4AD3-94B8-5B45C366D052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49A72E94-787E-43DF-9373-7A8E4085E4B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A72E94-787E-43DF-9373-7A8E4085E4B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A72E94-787E-43DF-9373-7A8E4085E4B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A72E94-787E-43DF-9373-7A8E4085E4B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
