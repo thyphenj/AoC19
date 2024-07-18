@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System;
+﻿using System;
 
 namespace _03_CrossedWires
 {

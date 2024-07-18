@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IntcodeComputer
+﻿namespace IntcodeComputer
 {
     public interface IStream
     {

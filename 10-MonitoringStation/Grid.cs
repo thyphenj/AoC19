@@ -1,15 +1,10 @@
-﻿using System.ComponentModel;
-using System.Drawing;
-using System.Net.Http.Headers;
-
-public class Grid
+﻿public class Grid
 {
-
     private int Width;
     private int Height;
     private Cell[,] Raw;
     private Cell[,] Cells;
-    private HashSet<int> Angles;
+    private AngleList Angles;
 
     public Grid(string[] input)
     {
@@ -18,73 +13,102 @@ public class Grid
 
         Raw = new Cell[Width, Height];
         Cells = new Cell[Width, Height];
-        Angles = new HashSet<int>();
+
+        Angles = new AngleList(Width, Height);
 
         for (int row = 0; row < Height; row++)
             for (int col = 0; col < Width; col++)
-            {
-                Cells[row, col] = new Cell(row, col, input[row][col] == '#');
                 Raw[row, col] = new Cell(row, col, input[row][col] == '#');
 
-                if (!(row == 0 && col == 0) && row <= col)
-                {
-                    int r = row;
-                    int c = col;
-                    if (r == 0)
-                        Angles.Add(1);
-                    else
-                    {
-                        foreach (var p in new int[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31 }.Where(z => z < Width))
-                        {
-                            while (r % p == 0 && c % p == 0)
-                            {
-                                r /= p;
-                                c /= p;
-                            }
-                        }
-                        Angles.Add(r * 100 + c);
-                    }
-                }
-            }
+        // foreach (var ang in Angles)
+        //     Console.WriteLine(ang);
+
+        // Console.WriteLine();
+
     }
     public void Reset()
     {
         for (int row = 0; row < Height; row++)
             for (int col = 0; col < Width; col++)
-                Cells[row, col] = new Cell(row, col,Raw[row,col].IsAnAsteroid);
+                Cells[row, col] = new Cell(row, col, Raw[row, col].IsAnAsteroid);
     }
 
-    public int Scan()
+    public (int, int, int) Scan()
     {
         int maxAsteroids = 0;
+        int rPos = 0;
+        int cPos = 0;
 
         for (int row = 0; row < Height; row++)
             for (int col = 0; col < Width; col++)
             {
+                Reset();
+
                 if (Cells[row, col].IsAnAsteroid)
                 {
-                    maxAsteroids = int.Max(maxAsteroids, ScanPerimeter(row, col));
+                    var numAsteroids = ScanPerimeter(row, col);
+                    if (numAsteroids > maxAsteroids)
+                    {
+                        maxAsteroids = int.Max(maxAsteroids, numAsteroids);
+                        rPos = row;
+                        cPos = col;
+                    }
                 }
             }
-        return maxAsteroids;
+        return (rPos, cPos, maxAsteroids);
     }
+    public int Destroy200(int r, int c)
+    {
+        int row;
+        int col;
 
+        int hits = 0;
+
+        while (true)
+        {
+            foreach (var ang in Angles)
+            {
+                row = r + ang.RowOffset;
+                col = c + ang.ColOffset;
+
+                while (IsLocationInsideGrid(row, col))
+                {
+                    if (Cells[row, col].IsAnAsteroid)
+                    {
+                        hits++;
+                        if (hits == 200)
+                        {
+                            Console.WriteLine(hits);
+                            return col * 100 + row;
+                        }
+                        else
+                            Cells[row, col].IsAnAsteroid = false;
+                        break;
+                    }
+                    row += ang.RowOffset;
+                    col += ang.ColOffset;
+                }
+            }
+            System.Console.WriteLine();
+        }
+    }
+    private bool IsLocationInsideGrid(int row, int col)
+    {
+        return (row >= 0 && col >= 0 && row < Height && col < Width);
+    }
     public int ScanPerimeter(int r, int c)
     {
         int retval = 0;
 
-        Reset();
-
         foreach (var ang in Angles)
         {
-
             {
-                int rOffset = ang / 100;
-                int cOffset = ang % 100;
+                int rOffset = ang.RowOffset;
+                int cOffset = ang.ColOffset;
 
                 int row = r + rOffset;
                 int col = c + cOffset;
-                while (row < Height && col < Width && !Cells[row, col].HasBeenChecked)
+                while (IsLocationInsideGrid(row, col) && !Cells[row, col].HasBeenChecked)
                 {
                     if (Cells[row, col].IsAnAsteroid)
                     {
@@ -95,130 +119,6 @@ public class Grid
                     row += rOffset;
                     col += cOffset;
                 }
-
-                if (rOffset != 0)
-                {
-                    row = r - rOffset;
-                    col = c + cOffset;
-                    while (row >= 0 && col < Width && !Cells[row, col].HasBeenChecked)
-                    {
-                        if (Cells[row, col].IsAnAsteroid)
-                        {
-                            Cells[row, col].HasBeenChecked = true;
-                            retval++;
-                            break;
-                        }
-                        row -= rOffset;
-                        col += cOffset;
-                    }
-                }
-
-                if (cOffset != 0)
-                {
-                    row = r + rOffset;
-                    col = c - cOffset;
-                    while (row < Height && col >= 0 && !Cells[row, col].HasBeenChecked)
-                    {
-                        if (Cells[row, col].IsAnAsteroid)
-                        {
-                            Cells[row, col].HasBeenChecked = true;
-                            retval++;
-                            break;
-                        }
-                        row += rOffset;
-                        col -= cOffset;
-                    }
-                }
-
-                if (rOffset != 0 && cOffset != 0)
-                {
-                    row = r - rOffset;
-                    col = c - cOffset;
-                    while (row >= 0 && col >= 0 && !Cells[row, col].HasBeenChecked)
-                    {
-                        if (Cells[row, col].IsAnAsteroid)
-                        {
-                            Cells[row, col].HasBeenChecked = true;
-                            retval++;
-                            break;
-                        }
-                        row -= rOffset;
-                        col -= cOffset;
-                    }
-                }
-            }
-            {
-
-                int rOffset = ang % 100;
-                int cOffset = ang / 100;
-
-                int row = r + rOffset;
-                int col = c + cOffset;
-                while (row < Height && col < Width && !Cells[row, col].HasBeenChecked)
-                {
-                    if (Cells[row, col].IsAnAsteroid)
-                    {
-                        Cells[row, col].HasBeenChecked = true;
-                        retval++;
-                        break;
-                    }
-                    row += rOffset;
-                    col += cOffset;
-                }
-
-                if (rOffset != 0)
-                {
-                    row = r - rOffset;
-                    col = c + cOffset;
-                    while (row >= 0 && col < Width && !Cells[row, col].HasBeenChecked)
-                    {
-                        if (Cells[row, col].IsAnAsteroid)
-                        {
-                            Cells[row, col].HasBeenChecked = true;
-                            retval++;
-                            break;
-                        }
-                        row -= rOffset;
-                        col += cOffset;
-                    }
-                }
-
-                if (cOffset != 0)
-                {
-                    row = r + rOffset;
-                    col = c - cOffset;
-                    while (row < Height && col >= 0 && !Cells[row, col].HasBeenChecked)
-                    {
-                        if (Cells[row, col].IsAnAsteroid)
-                        {
-                            Cells[row, col].HasBeenChecked = true;
-                            retval++;
-                            break;
-                        }
-                        row += rOffset;
-                        col -= cOffset;
-                    }
-                }
-
-                if (rOffset != 0 && cOffset != 0)
-                {
-                    row = r - rOffset;
-                    col = c - cOffset;
-                    while (row >= 0 && col >= 0 && !Cells[row, col].HasBeenChecked)
-                    {
-                        if (Cells[row, col].IsAnAsteroid)
-                        {
-                            Cells[row, col].HasBeenChecked = true;
-                            retval++;
-                            break;
-                        }
-                        row -= rOffset;
-                        col -= cOffset;
-                    }
-                }
-
-
-
             }
         }
         return retval;

@@ -6,11 +6,10 @@
 
         Grid grid = new Grid(input);
 
-        Console.WriteLine(grid);
-        Console.WriteLine();
-        Console.WriteLine( grid.Scan());
-        Console.WriteLine();
+        var maxAsteroids = grid.Scan();
+        Console.WriteLine(maxAsteroids);
 
-        Console.WriteLine(grid);
+        var twoHundredth = grid.Destroy200(maxAsteroids.Item1, maxAsteroids.Item2);
+        Console.WriteLine(twoHundredth);
     }
 }

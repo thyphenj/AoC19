@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace _06_UniversalOrbitMap
+﻿namespace _06_UniversalOrbitMap
 {
     public class Pair
     {
