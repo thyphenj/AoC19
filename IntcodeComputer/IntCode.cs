@@ -36,7 +36,7 @@ namespace IntcodeComputer
 
             Pausable = pausable;
         }
-        public void Run()
+        public bool Run()
         {
             int pointer;
 
@@ -52,6 +52,7 @@ namespace IntcodeComputer
             int opcode = instruction % 100;
             while (!Halted && !Paused)
             {
+                Console.Write($"\n{instruction,6} - ");
                 Param param1, param2, param3;
 
                 Mode mode1 = (Mode)((instruction / 100) % 10);
@@ -153,6 +154,7 @@ namespace IntcodeComputer
                     opcode = instruction % 100;
                 }
             }
+            return !Halted;
         }
 
         private long ValueAt(Param param)
