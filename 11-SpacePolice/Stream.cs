@@ -24,13 +24,11 @@ public class Stream : IStream
         {
             hull.SetCurrentColour(value);
             HasBeenPainted = true;
-            Console.Write( $"  col={value,1}");
         }
         else
         {
             hull.MoveTo(value);
             HasBeenPainted = false;
-            Console.WriteLine( $"  dir={value,1}");
         }
     }
 

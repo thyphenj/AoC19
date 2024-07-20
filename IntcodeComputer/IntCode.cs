@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace IntcodeComputer
 {
@@ -11,20 +12,23 @@ namespace IntcodeComputer
         List<long> Memory;
         IStream StreamIn;
         IStream StreamOut;
-        int RelativeBase = 0;
-        record Param(Mode mode, int location);
-        bool Pausable = false;
-        bool Paused = false;
-        int RestartPointer;
+        private int RelativeBase = 0;
+        private record Param(Mode TheMode, long TheParam);
+        private bool Pausable = false;
+        private bool Paused = false;
+        private int RestartPointer;
 
-        public IntCode(List<long> memory, IStream streamIn = null, IStream streamOut = null, bool pausable = false)
+        public IntCode(List<long> memory, IStream streamIn, IStream streamOut, bool pausable = false)
         {
             Memory = new List<long>(memory);
 
             StreamIn = streamIn;
             StreamOut = streamOut;
+
+            Pausable = pausable;
         }
-        public IntCode(string filename, IStream streamIn = null, IStream streamOut = null, bool pausable = false)
+
+        public IntCode(string filename, IStream streamIn, IStream streamOut, bool pausable = false)
         {
             Memory = new List<long>();
 
@@ -36,57 +40,55 @@ namespace IntcodeComputer
 
             Pausable = pausable;
         }
+
         public bool Run()
         {
-            int pointer;
+            // -- re-entry or start from scratch
 
-            if (Paused)
-            {
-                pointer = RestartPointer;
-                Paused = false;
-            }
-            else
-                pointer = 0;
+            int ip = Paused ? RestartPointer : 0;
 
-            int instruction = (int)Memory[pointer++];
-            int opcode = instruction % 100;
+            Halted = false;
+            Paused = false;
             while (!Halted && !Paused)
             {
-                Console.Write($"\n{instruction,6} - ");
-                Param param1, param2, param3;
+                long instruction = Memory[ip++];
+                int opcode = (int)(instruction % 100);
 
                 Mode mode1 = (Mode)((instruction / 100) % 10);
                 Mode mode2 = (Mode)((instruction / 1000) % 10);
                 Mode mode3 = (Mode)((instruction / 10000) % 10);
+
+                Param param1, param2, param3;
+
                 switch (opcode)
                 {
                     case 1: // -- Add
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
-                        param2 = new Param(mode2, (int)Memory[pointer++]);
-                        param3 = new Param(mode3, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
+                        param2 = new Param(mode2, Memory[ip++]);
+                        param3 = new Param(mode3, Memory[ip++]);
 
                         AssignAt(param3, ValueAt(param1) + ValueAt(param2));
 
                         break;
 
                     case 2: // -- Mult
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
-                        param2 = new Param(mode2, (int)Memory[pointer++]);
-                        param3 = new Param(mode3, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
+                        param2 = new Param(mode2, Memory[ip++]);
+                        param3 = new Param(mode3, Memory[ip++]);
 
                         AssignAt(param3, ValueAt(param1) * ValueAt(param2));
 
                         break;
 
                     case 3: // -- Read
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
 
                         AssignAt(param1, StreamIn.Read());
 
                         break;
 
                     case 4: // -- Write
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
 
                         StreamOut.Write(ValueAt(param1));
 
@@ -95,45 +97,45 @@ namespace IntcodeComputer
                         break;
 
                     case 5: // -- jump-if-true
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
-                        param2 = new Param(mode2, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
+                        param2 = new Param(mode2, Memory[ip++]);
 
                         if (ValueAt(param1) != 0)
-                            pointer = (int)ValueAt(param2);
+                            ip = (int)ValueAt(param2);
 
                         break;
 
                     case 6: // -- jump-if-false
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
-                        param2 = new Param(mode2, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
+                        param2 = new Param(mode2, Memory[ip++]);
 
                         if (ValueAt(param1) == 0)
-                            pointer = (int)ValueAt(param2);
+                            ip = (int)ValueAt(param2);
 
                         break;
 
                     case 7: // -- LT
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
-                        param2 = new Param(mode2, (int)Memory[pointer++]);
-                        param3 = new Param(mode3, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
+                        param2 = new Param(mode2, Memory[ip++]);
+                        param3 = new Param(mode3, Memory[ip++]);
 
                         AssignAt(param3, (ValueAt(param1) < ValueAt(param2)) ? 1 : 0);
 
                         break;
 
                     case 8: // -- EQ
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
-                        param2 = new Param(mode2, (int)Memory[pointer++]);
-                        param3 = new Param(mode3, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, Memory[ip++]);
+                        param2 = new Param(mode2, Memory[ip++]);
+                        param3 = new Param(mode3, Memory[ip++]);
 
                         AssignAt(param3, (ValueAt(param1) == ValueAt(param2)) ? 1 : 0);
 
                         break;
 
                     case 9: // -- RelBase
-                        param1 = new Param(mode1, (int)Memory[pointer++]);
+                        param1 = new Param(mode1, (int)Memory[ip++]);
 
-                        RelativeBase += (int)ValueAt(param1);;
+                        RelativeBase += (int)ValueAt(param1); ;
 
                         break;
 
@@ -145,63 +147,56 @@ namespace IntcodeComputer
                         throw new Exception("*************BUGGER!!");
                 }
                 if (Paused)
-                {
-                    RestartPointer = pointer;
-                }
-                else if (!Halted)
-                {
-                    instruction = (int)Memory[pointer++];
-                    opcode = instruction % 100;
-                }
+                    RestartPointer = ip;
             }
             return !Halted;
         }
 
         private long ValueAt(Param param)
         {
-            switch (param.mode)
+            switch (param.TheMode)
             {
                 case Mode.POSITION:
-                    EnsureMemoryExists(param.location);
-                    return Memory[param.location];
+                    EnsureMemoryExists((int)param.TheParam);
+                    return Memory[(int)param.TheParam];
 
                 case Mode.IMMEDIATE:
-                    return param.location;
+                    return param.TheParam;
 
                 case Mode.RELATIVE:
-                    EnsureMemoryExists(param.location + RelativeBase);
-                    return Memory[param.location + RelativeBase];
+                    EnsureMemoryExists((int)param.TheParam + RelativeBase);
+                    return Memory[(int)param.TheParam + RelativeBase];
 
                 default:
-                    throw new Exception($"Mode [{param.mode}] is ValueAt");
+                    throw new Exception($"Mode [{param.TheMode}] is ValueAt");
             }
         }
 
         private void AssignAt(Param param, long value)
         {
-            switch (param.mode)
+            switch (param.TheMode)
             {
                 case Mode.POSITION:
-                    EnsureMemoryExists(param.location);
-                    Memory[param.location] = value;
+                    EnsureMemoryExists((int)param.TheParam);
+                    Memory[(int)param.TheParam] = value;
                     break;
 
                 case Mode.IMMEDIATE:
                     throw new Exception("Can't Assign in immediate mode");
 
                 case Mode.RELATIVE:
-                    EnsureMemoryExists(param.location + RelativeBase);
-                    Memory[param.location + RelativeBase] = value;
+                    EnsureMemoryExists((int)param.TheParam + RelativeBase);
+                    Memory[(int)param.TheParam + RelativeBase] = value;
                     break;
 
                 default:
-                    throw new Exception($"Mode [{param.mode}] is invalid on AssignAt");
+                    throw new Exception($"Mode [{param.TheMode}] is invalid on AssignAt");
             }
         }
 
-        private void EnsureMemoryExists( int loc )
+        private void EnsureMemoryExists(int loc)
         {
-            while (Memory.Count < loc+1)
+            while (Memory.Count < loc + 1)
                 Memory.Add(0);
         }
         public long ViewMemoryLocation(int loc)

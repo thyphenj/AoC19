@@ -77,10 +77,7 @@
                     {
                         hits++;
                         if (hits == 200)
-                        {
-                            Console.WriteLine(hits);
                             return col * 100 + row;
-                        }
                         else
                             Cells[row, col].IsAnAsteroid = false;
                         break;

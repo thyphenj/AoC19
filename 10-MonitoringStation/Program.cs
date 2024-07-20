@@ -7,7 +7,7 @@
         Grid grid = new Grid(input);
 
         var maxAsteroids = grid.Scan();
-        Console.WriteLine(maxAsteroids);
+        Console.WriteLine(maxAsteroids.Item3);
 
         var twoHundredth = grid.Destroy200(maxAsteroids.Item1, maxAsteroids.Item2);
         Console.WriteLine(twoHundredth);

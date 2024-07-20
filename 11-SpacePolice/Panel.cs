@@ -9,5 +9,5 @@ public class Panel
         Colour = colour;
     }
  
-    public override string ToString() => Colour == 0 ? "." : "#";
+    public override string ToString() => Colour == 0 ? " " : "#";
 }
