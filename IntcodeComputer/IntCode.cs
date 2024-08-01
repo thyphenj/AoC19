@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace IntcodeComputer
 {
@@ -10,34 +9,31 @@ namespace IntcodeComputer
         public bool Halted = false;
 
         List<long> Memory;
-        IStream StreamIn;
-        IStream StreamOut;
+        IStream Stream;
         private int RelativeBase = 0;
         private record Param(Mode TheMode, long TheParam);
         private bool Pausable = false;
         private bool Paused = false;
         private int RestartPointer;
 
-        public IntCode(List<long> memory, IStream streamIn, IStream streamOut, bool pausable = false)
+        public IntCode(List<long> memory, IStream stream=null,bool pausable = false)
         {
             Memory = new List<long>(memory);
 
-            StreamIn = streamIn;
-            StreamOut = streamOut;
-
+            Stream = stream;
+     
             Pausable = pausable;
         }
 
-        public IntCode(string filename, IStream streamIn, IStream streamOut, bool pausable = false)
+        public IntCode(string filename, IStream stream=null,  bool pausable = false)
         {
             Memory = new List<long>();
 
             foreach (var n in File.ReadAllText(filename).Split(','))
                 Memory.Add(long.Parse(n));
 
-            StreamIn = streamIn;
-            StreamOut = streamOut;
-
+            Stream = stream;
+  
             Pausable = pausable;
         }
 
@@ -83,14 +79,14 @@ namespace IntcodeComputer
                     case 3: // -- Read
                         param1 = new Param(mode1, Memory[ip++]);
 
-                        AssignAt(param1, StreamIn.Read());
+                        AssignAt(param1, Stream.Read());
 
                         break;
 
                     case 4: // -- Write
                         param1 = new Param(mode1, Memory[ip++]);
 
-                        StreamOut.Write(ValueAt(param1));
+                        Stream.Write(ValueAt(param1));
 
                         Paused = Pausable;
 
@@ -181,8 +177,8 @@ namespace IntcodeComputer
                     Memory[(int)param.TheParam] = value;
                     break;
 
-                case Mode.IMMEDIATE:
-                    throw new Exception("Can't Assign in immediate mode");
+                // case Mode.IMMEDIATE:
+                //     throw new Exception("Can't Assign in immediate mode");
 
                 case Mode.RELATIVE:
                     EnsureMemoryExists((int)param.TheParam + RelativeBase);

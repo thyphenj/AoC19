@@ -22,18 +22,18 @@ namespace _05_SunnyWithAChanceOfAsteroids
         static void Main(string[] args)
         {
             IntCode computer;
-            List<long> program = ReadIntcodeFile (@"Resources/input.txt");
+            var program = ReadIntcodeFile (@"Resources/input.txt");
 
             Console.WriteLine("--------------------- Part 1 ---------------------------");
 
-            computer = new IntCode(program, new Stream(), new Stream());
+            computer = new IntCode(program, new Stream(1));
             computer.Run();
 
             Console.WriteLine();
 
             Console.WriteLine("--------------------- Part 2 ---------------------------");
 
-            computer = new IntCode(program, new Stream(), new Stream());
+            computer = new IntCode(program, new Stream(5));
             computer.Run();
 
             Console.WriteLine();

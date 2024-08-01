@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "10-MonitoringStation", "10-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "11-SpacePolice", "11-SpacePolice\11-SpacePolice.csproj", "{16372631-E737-4CC2-B3CC-B313D1B61026}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "12-TheNBodyProblem", "12-TheNBodyProblem\12-TheNBodyProblem.csproj", "{68C47DC1-5F1B-44AA-AD2F-5517B82FFB37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "13-CarePackage", "13-CarePackage\13-CarePackage.csproj", "{17DF4330-2289-4F8A-953F-82EE5918FAB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +85,14 @@ Global
 		{16372631-E737-4CC2-B3CC-B313D1B61026}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16372631-E737-4CC2-B3CC-B313D1B61026}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16372631-E737-4CC2-B3CC-B313D1B61026}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68C47DC1-5F1B-44AA-AD2F-5517B82FFB37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68C47DC1-5F1B-44AA-AD2F-5517B82FFB37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68C47DC1-5F1B-44AA-AD2F-5517B82FFB37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68C47DC1-5F1B-44AA-AD2F-5517B82FFB37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17DF4330-2289-4F8A-953F-82EE5918FAB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17DF4330-2289-4F8A-953F-82EE5918FAB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17DF4330-2289-4F8A-953F-82EE5918FAB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17DF4330-2289-4F8A-953F-82EE5918FAB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

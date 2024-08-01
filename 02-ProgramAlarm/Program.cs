@@ -25,7 +25,7 @@ namespace _02_ProgramAlarm
                 memory[1] = 12; // -- noun
                 memory[2] = 2;  // -- verb
 
-                IntCode computer = new IntCode(memory, null, null);
+                IntCode computer = new IntCode(memory);
 
                 computer.Run();
 
@@ -46,7 +46,7 @@ namespace _02_ProgramAlarm
                         memory[1] = noun;
                         memory[2] = verb;
 
-                        IntCode computer = new IntCode(memory,null,null);
+                        IntCode computer = new IntCode(memory);
 
                         computer.Run();
                         if (computer.ViewMemoryLocation(0) == target)

@@ -11,6 +11,9 @@ for (int i = 0; i < layerCnt; i++)
     grid.Add(new Layer(line.Substring(i * layerLen, layerLen)));
 }
 
+Console.WriteLine("--------------------- Part 1 ---------------------------");
 Console.WriteLine(grid.WhiteTimesTrans);
 Console.WriteLine();
+
+Console.WriteLine("--------------------- Part 2 ---------------------------");
 Console.WriteLine(grid);

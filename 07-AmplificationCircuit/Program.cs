@@ -37,11 +37,11 @@ namespace _07_AmplificationCircuit
                                             {
                                                 stream = new Stream();
 
-                                                stream.Seed(a); var ampA = new IntCode(@"Resources/input.txt", stream, stream); ampA.Run();
-                                                stream.Seed(b); var ampB = new IntCode(@"Resources/input.txt", stream, stream); ampB.Run();
-                                                stream.Seed(c); var ampC = new IntCode(@"Resources/input.txt", stream, stream); ampC.Run();
-                                                stream.Seed(d); var ampD = new IntCode(@"Resources/input.txt", stream, stream); ampD.Run();
-                                                stream.Seed(e); var ampE = new IntCode(@"Resources/input.txt", stream, stream); ampE.Run();
+                                                stream.Seed(a); var ampA = new IntCode(@"Resources/input.txt", stream); ampA.Run();
+                                                stream.Seed(b); var ampB = new IntCode(@"Resources/input.txt", stream); ampB.Run();
+                                                stream.Seed(c); var ampC = new IntCode(@"Resources/input.txt", stream); ampC.Run();
+                                                stream.Seed(d); var ampD = new IntCode(@"Resources/input.txt", stream); ampD.Run();
+                                                stream.Seed(e); var ampE = new IntCode(@"Resources/input.txt", stream); ampE.Run();
 
                                                 max = Math.Max(max, stream.Cueue[0]);
                                             }
@@ -75,11 +75,11 @@ namespace _07_AmplificationCircuit
 
                                 stream = new Stream();
 
-                                stream.Seed(a); var ampA = new IntCode(memoryA, stream, stream, true); ampA.Run();
-                                stream.Seed(b); var ampB = new IntCode(memoryB, stream, stream, true); ampB.Run();
-                                stream.Seed(c); var ampC = new IntCode(memoryC, stream, stream, true); ampC.Run();
-                                stream.Seed(d); var ampD = new IntCode(memoryD, stream, stream, true); ampD.Run();
-                                stream.Seed(e); var ampE = new IntCode(memoryE, stream, stream, true); ampE.Run();
+                                stream.Seed(a); var ampA = new IntCode(memoryA, stream,  true); ampA.Run();
+                                stream.Seed(b); var ampB = new IntCode(memoryB, stream, true); ampB.Run();
+                                stream.Seed(c); var ampC = new IntCode(memoryC, stream,  true); ampC.Run();
+                                stream.Seed(d); var ampD = new IntCode(memoryD, stream, true); ampD.Run();
+                                stream.Seed(e); var ampE = new IntCode(memoryE, stream, true); ampE.Run();
 
                                 max = Math.Max(max, stream.Cueue[0]);
                                 do

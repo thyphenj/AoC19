@@ -5,17 +5,12 @@ namespace _05_SunnyWithAChanceOfAsteroids
 {
     public  class Stream : IStream
     {
-        public Stream()
+        private int SystemID;
+        public Stream(int systemID)
         {
+            SystemID = systemID;
         }
-        public long Read()
-        {
-            Console.Write("Enter 1 for part 1 (or 2 for part 2) :- ");
-            if (Console.ReadLine() == "1")
-                return 1;
-            else
-                return 5;
-        }
+        public long Read() => SystemID;
         public void Write(long value)
         {
             Console.WriteLine(value);

@@ -6,6 +6,10 @@
     private Cell[,] Cells;
     private AngleList Angles;
 
+        public int MaxAsteroids ;
+        public int MaxRow ;
+        public int MaxCol ;
+
     public Grid(string[] input)
     {
         Width = input[0].Length;
@@ -33,11 +37,11 @@
                 Cells[row, col] = new Cell(row, col, Raw[row, col].IsAnAsteroid);
     }
 
-    public (int, int, int) Scan()
+    public void Scan()
     {
-        int maxAsteroids = 0;
-        int rPos = 0;
-        int cPos = 0;
+        MaxAsteroids = 0;
+        MaxRow = 0;
+        MaxCol = 0;
 
         for (int row = 0; row < Height; row++)
             for (int col = 0; col < Width; col++)
@@ -47,15 +51,14 @@
                 if (Cells[row, col].IsAnAsteroid)
                 {
                     var numAsteroids = ScanPerimeter(row, col);
-                    if (numAsteroids > maxAsteroids)
+                    if (numAsteroids > MaxAsteroids)
                     {
-                        maxAsteroids = int.Max(maxAsteroids, numAsteroids);
-                        rPos = row;
-                        cPos = col;
+                        MaxAsteroids = int.Max(MaxAsteroids, numAsteroids);
+                        MaxRow = row;
+                        MaxCol = col;
                     }
                 }
             }
-        return (rPos, cPos, maxAsteroids);
     }
     public int Destroy200(int r, int c)
     {

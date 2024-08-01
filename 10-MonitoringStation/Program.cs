@@ -1,15 +1,14 @@
-﻿internal class Program
-{
-    private static void Main()
-    {
-        string[] input = File.ReadAllLines(@"Resources/input.txt");
+﻿
+var grid = new Grid(File.ReadAllLines(@"Resources/input.txt"));
 
-        Grid grid = new Grid(input);
+Console.WriteLine("--------------------- Part 1 ---------------------------");
 
-        var maxAsteroids = grid.Scan();
-        Console.WriteLine(maxAsteroids.Item3);
+grid.Scan();
+Console.WriteLine(grid.MaxAsteroids);
+Console.WriteLine();
 
-        var twoHundredth = grid.Destroy200(maxAsteroids.Item1, maxAsteroids.Item2);
-        Console.WriteLine(twoHundredth);
-    }
-}
+Console.WriteLine("--------------------- Part 2 ---------------------------");
+
+var twoHundredth = grid.Destroy200(grid.MaxRow, grid.MaxCol);
+Console.WriteLine(twoHundredth);
+

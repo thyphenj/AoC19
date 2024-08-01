@@ -2,14 +2,14 @@
     
     public class Stream : IStream
     {
-        public Stream()
+        private long TestMode;
+        public Stream(long testMode)
         {
+            TestMode = testMode;
         }
         public long Read()
         {
-            Console.Write("> ");
-            string retval = Console.ReadLine()??"";
-            return long.Parse(retval);
+            return TestMode;
         }
         public void Write(long value)
         {

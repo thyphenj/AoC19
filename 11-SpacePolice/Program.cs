@@ -1,22 +1,22 @@
 ﻿using IntcodeComputer;
 
-// -- Part 1 ----------------------
-{
-    var stream = new Stream();
-    var comp = new IntCode(@"Resources/input.txt", stream, stream, true );
+Console.WriteLine("--------------------- Part 1 ---------------------------");
 
-    while ( comp.Run())
-        ;
+var stream = new Stream();
+var comp = new IntCode(@"Resources/input.txt", stream, true);
 
-    Console.WriteLine(stream.hull.Panels.Count);
-}
-// -- Part 2 ----------------------
-{
-    var stream = new Stream(1);
-    var comp = new IntCode(@"Resources/input.txt", stream, stream, true);
+while (comp.Run())
+    ;
 
-    while (comp.Run())
-        ;
+Console.WriteLine(stream.hull.Panels.Count);
+Console.WriteLine();
 
-    stream.hull.PrintCanvas();
-}
+Console.WriteLine("--------------------- Part 2 ---------------------------");
+
+stream = new Stream(1);
+comp = new IntCode(@"Resources/input.txt", stream, true);
+
+while (comp.Run())
+    ;
+
+stream.hull.PrintCanvas();
